@@ -37,6 +37,28 @@ app.get("/items", (req, res) => {
     })
 })
 
+app.get("/items/:id", (req, res) => {
+
+    connection.connect((err) => {
+        if (err) {
+            console.log("err", err);
+        }
+
+        connection.query("SELECT * FROM items WHERE done = 0 AND itemId = " + req.params.id , (err, data) => {
+            if (err) {
+                console.log("err", err);
+            }
+
+            data.map(text => {
+                text.itemDescription = Buffer.from(text.itemDescription).toString();
+            })
+
+            console.log("en item", data);
+            res.json(data)
+        })
+    })
+})
+
 app.get("/items/:listId", (req, res) => {
 
     let listId = req.params.listId;
@@ -59,13 +81,14 @@ app.get("/items/:listId", (req, res) => {
 
 app.post("/items", (req, res) => {
     let newTodo = req.body;
+    let saveText = "Lorem ipsum, Dollars!"
 
     connection.connect((err) => {
         if (err) {
             console.log("err", err);
         }
 
-        let sql = "INSERT INTO items (itemName, listId) VALUES ('"+newTodo.newTodoName+"', "+newTodo.newTodoList+" )";
+        let sql = "INSERT INTO items (itemName, listId, itemDescription) VALUES ('"+newTodo.newTodoName+"', "+newTodo.newTodoList+", '"+saveText+"' )";
 
         connection.query(sql, (err, data) => {
             if (err) {

@@ -24,6 +24,7 @@ export default function printTodos(list) {
         data.map(todo => {
             let li = document.createElement("li");
             li.innerText = todo.itemName + " (" + todo.listId + ")";
+            // li.innerText += todo.description.text(todo.description);
             li.id = todo.itemId;
 
             li.addEventListener("click", () => {
